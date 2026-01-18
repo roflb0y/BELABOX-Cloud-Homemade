@@ -45,6 +45,11 @@ socket.addEventListener("message", async (event) => {
     sendStats(j);
 });
 
+socket.addEventListener("close", async (event) => {
+    console.log("Socket closed. Exiting...");
+    process.exit(1);
+})
+
 setInterval(function () {
     if (socket) {
         socket.send(JSON.stringify({ keepalive: null }));
