@@ -24,11 +24,19 @@ socket.addEventListener("open", (event) => {
 
 socket.addEventListener("message", async (event) => {
     const j = JSON.parse(event.data);
+    if (j.notification?.show[0]?.msg === "Invalid password") {
+        console.log(
+            "Invalid password. Make sure to set the right password in config.json",
+        );
+        return;
+    }
     if (j.auth?.success === true) {
         console.log("Logged in. Starting to send messages");
+        return;
     }
     if (j.auth?.auth_token && config.token === "") {
         saveToken(j.auth.auth_token);
+        return;
     }
     sendStats(j);
 });
