@@ -1,6 +1,8 @@
 import { sendStats } from "./net.js";
 import { config, saveToken } from "./config.js";
 
+import { WebSocket } from "ws";
+
 const socket = new WebSocket("ws://belabox.local");
 
 console.log("Connecting...");
