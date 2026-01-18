@@ -24,7 +24,9 @@ socket.addEventListener("open", (event) => {
 
 socket.addEventListener("message", async (event) => {
     const j = JSON.parse(event.data);
-    if (j.notification?.show[0]?.msg === "Invalid password") {
+
+    // node v12 type beat
+    if (j.notification && j.notification.show && j.notification.show[0] && j.notification.show[0].msg === "Invalid password") {
         console.log(
             "Invalid password. Make sure to set the right password in config.json",
         );
