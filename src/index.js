@@ -32,11 +32,11 @@ socket.addEventListener("message", async (event) => {
         );
         return;
     }
-    if (j.auth?.success === true) {
+    if (j.auth && j.auth.success === true) {
         console.log("Logged in. Starting to send messages");
         return;
     }
-    if (j.auth?.auth_token && config.token === "") {
+    if (j.auth && j.auth.auth_token && config.token === "") {
         saveToken(j.auth.auth_token);
         return;
     }
