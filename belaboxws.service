@@ -1,5 +1,5 @@
 [Unit]
-Description=BELABOXWS LESSGOOO
+Description=yeah
 After=network.target
 
 [Service]
