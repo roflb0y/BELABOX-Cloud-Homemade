@@ -3,10 +3,10 @@ Description=BELABOXWS LESSGOOO
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/nodejs /home/user/BELABOX-Cloud-Homemade/src/index.js
+ExecStart=/usr/bin/nodejs /home/user/BBSender/src/index.js
 Restart=always
 RestartSec=1
-WorkingDirectory=/root/BELABOX-Cloud-Homemade
+WorkingDirectory=/home/user/BBSender
 
 [Install]
 WantedBy=multi-user.target
