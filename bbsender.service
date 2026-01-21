@@ -1,0 +1,12 @@
+[Unit]
+Description=yeah
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/user/BBSender/src/index.js
+Restart=always
+RestartSec=1
+WorkingDirectory=/home/user/BBSender
+
+[Install]
+WantedBy=multi-user.target
