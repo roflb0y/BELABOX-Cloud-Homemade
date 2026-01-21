@@ -1,22 +1,36 @@
-import { sendStats } from "./net.js";
 import { config, saveToken } from "./config.js";
 
 import { WebSocket } from "ws";
 
-const socket = new WebSocket("ws://belabox.local");
+const belaboxSocket = new WebSocket("ws://belabox.local");
+const senderSocket = new WebSocket(config.url);
 
 console.log("Connecting...");
 
-socket.addEventListener("open", (event) => {
-    console.log("Connection established");
+senderSocket.on("open", () => {
+    console.log("Connected to the receiver WebSocket");
+});
+
+senderSocket.on("close", () => {
+    console.log("senderSocket is closed. exiting...");
+    process.exit(0);
+});
+
+senderSocket.on("error", (err) => {
+    console.log(err);
+    process.exit(0);
+})
+
+belaboxSocket.on("open", () => {
+    console.log("Connected to BELABOX WebSocket");
     if (config.token !== "") {
-        socket.send(
+        belaboxSocket.send(
             JSON.stringify({
                 auth: { token: config.token },
             }),
         );
     } else {
-        socket.send(
+        belaboxSocket.send(
             JSON.stringify({
                 auth: { password: config.password, persistent_token: true },
             }),
@@ -24,11 +38,16 @@ socket.addEventListener("open", (event) => {
     }
 });
 
-socket.addEventListener("message", async (event) => {
+belaboxSocket.addEventListener("message", async (event) => {
     const j = JSON.parse(event.data);
 
     // node v12 type beat
-    if (j.notification && j.notification.show && j.notification.show[0] && j.notification.show[0].msg === "Invalid password") {
+    if (
+        j.notification &&
+        j.notification.show &&
+        j.notification.show[0] &&
+        j.notification.show[0].msg === "Invalid password"
+    ) {
         console.log(
             "Invalid password. Make sure to set the right password in config.json",
         );
@@ -42,16 +61,24 @@ socket.addEventListener("message", async (event) => {
         saveToken(j.auth.auth_token);
         return;
     }
-    sendStats(j);
+
+    if (senderSocket.readyState === senderSocket.OPEN) {
+        senderSocket.send(event.data, (err) => {
+            if (err) console.log(`Error: ${err}`);
+        });
+    } else {
+        console.log("senderSocket is closed. exiting...");
+        process.exit(0);
+    }
 });
 
-socket.addEventListener("close", async (event) => {
-    console.log("Socket closed. Exiting...");
-    process.exit(1);
-})
+belaboxSocket.on("close", () => {
+    console.log("BELABOX socket closed. Exiting...");
+    process.exit(0);
+});
 
 setInterval(function () {
-    if (socket) {
-        socket.send(JSON.stringify({ keepalive: null }));
+    if (belaboxSocket.readyState === belaboxSocket.OPEN) {
+        belaboxSocket.send(JSON.stringify({ keepalive: null }));
     }
 }, 10000);

@@ -1,5 +1,5 @@
 {
-    "url": "http://",
+    "url": "ws://1.2.3.4:5055/ws",
     "password": "",
     "token": ""
 }
