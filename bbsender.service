@@ -1,6 +1,8 @@
 [Unit]
 Description=yeah
 After=network.target
+StartLimitIntervalSec=0
+StartLimitBurst=infinity
 
 [Service]
 ExecStart=/usr/bin/nodejs /home/user/BBSender/src/index.js
