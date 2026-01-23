@@ -63,7 +63,7 @@ senderSocket.on("open", () => {
             });
         } else {
             console.log("senderSocket is closed. exiting...");
-            //process.exit(0);
+            process.exit(0);
         }
     });
 
